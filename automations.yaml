@@ -1,0 +1,121 @@
+- id: '1663357887700'
+  alias: Ampel all on
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: rest_command.ampel_all_on
+    data: {}
+  mode: single
+- id: '1663358120737'
+  alias: Ampel all off
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: rest_command.ampel_off
+    data: {}
+  mode: single
+- id: '1663362768451'
+  alias: Alles-Aus-Knopf
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.tasmota_5
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.new_scene
+    metadata: {}
+  - service: rest_command.ampel_off
+    data: {}
+  mode: single
+- id: '1663363406184'
+  alias: Alles aus
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: rest_command.ampel_off
+    data: {}
+  - service: scene.turn_on
+    target:
+      entity_id: scene.new_scene
+    metadata: {}
+  mode: single
+- id: '1663369771702'
+  alias: Labor-Status-Knopf
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - switch.tasmota_40f520cf460d_switch_relay_2
+  condition: []
+  action:
+  - if:
+    - condition: device
+      type: is_on
+      device_id: d1aaa3538c22db1672ebb37023c02f9b
+      entity_id: switch.tasmota_40f520cf460d_switch_relay_2
+      domain: switch
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 0
+    then:
+    - service: rest_command.labor_close
+      data: {}
+    else:
+    - service: rest_command.labor_open
+      data: {}
+  - service: homeassistant.update_entity
+    data: {}
+    target:
+      entity_id: sensor.raumstatus
+  mode: single
+- id: '1663699840830'
+  alias: Labor-Status Poll
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.raumstatus
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 30
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: sensor.raumstatus
+      attribute: open
+      state: true
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 20
+    then:
+    - type: turn_off
+      device_id: d1aaa3538c22db1672ebb37023c02f9b
+      entity_id: switch.tasmota_40f520cf460d_switch_relay_2
+      domain: switch
+    else: []
+  - if:
+    - condition: state
+      entity_id: sensor.raumstatus
+      attribute: open
+      state: false
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 20
+    then:
+    - type: turn_on
+      device_id: d1aaa3538c22db1672ebb37023c02f9b
+      entity_id: switch.tasmota_40f520cf460d_switch_relay_2
+      domain: switch
+  mode: single

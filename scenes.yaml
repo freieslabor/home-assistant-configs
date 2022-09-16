@@ -1,0 +1,19 @@
+- id: '1663362829528'
+  name: Alles aus
+  entities:
+    switch.tasmota_2:
+      friendly_name: Kühlschranklicht
+      state: 'off'
+    switch.tasmota_3:
+      friendly_name: Frozen Bottle
+      state: 'off'
+    switch.tasmota_4:
+      friendly_name: Küchenlicht
+      state: 'off'
+    switch.shelly1l_98cdac2f6c59:
+      friendly_name: Leuchtstoffröhre
+      state: 'off'
+    switch.tasmota:
+      friendly_name: Studio-Scheinwerfer
+      state: 'off'
+  metadata: {}

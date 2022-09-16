@@ -1,0 +1,105 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Example configuration.yaml entry
+switch:
+  - platform: command_line
+    switches:
+      frozenbottle_jukebox_labor_equalizer:
+        command_on: ssh labor@jukebox systemctl --user start frozen-bottle-equalizer.service
+        command_off: ssh labor@jukebox systemctl --user stop frozen-bottle-equalizer.service
+      frozenbottle_jukebox_adahlhoff_equalizer:
+        command_on: ssh adahlhoff@jukebox systemctl --user start frozen-bottle-equalizer.service
+        command_off: ssh adahlhoff@jukebox systemctl --user stop frozen-bottle-equalizer.service
+      frozenbottle_patterns:
+        command_on: ssh frozen-bottle systemctl start frozen-bottle-loop-all.service
+        command_off: ssh frozen-bottle systemctl stop frozen-bottle-loop-all.service
+      jukebox_labor_mute:
+        command_on: ssh labor@jukebox amixer set Master mute
+        command_off: ssh labor@jukebox amixer set Master unmute
+      jukebox_adahlhoff_mute:
+        command_on: ssh adahlhoff@jukebox amixer set Master mute
+        command_off: ssh adahlhoff@jukebox amixer set Master unmute
+
+  - platform: wake_on_lan
+    mac: "d0:27:88:b2:48:38"
+    name: "Jukebox"
+
+rest_command:
+  ampel_off:
+    url: "http://ampel/stop"
+
+  ampel_normal:
+    url: "http://ampel/normal"
+
+  ampel_night:
+    url: "http://ampel/night"
+
+  ampel_red:
+    url: "http://ampel/custom"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "red=1&yellow=0&green=0"
+
+  ampel_yellow:
+    url: "http://ampel/custom"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "red=0&yellow=1&green=0"
+
+  ampel_green:
+    url: "http://ampel/custom"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "red=0&yellow=0&green=1"
+
+  ampel_all_on:
+    url: "http://ampel/custom"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "red=1&yellow=1&green=1"
+
+  labor_open:
+    url: "https://freieslabor.org/api/room/"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "open=true"
+    username: "info-display"
+    password: !secret labor_api
+    verify_ssl: False
+
+  labor_close:
+    url: "https://freieslabor.org/api/room/"
+    method: post
+    content_type: "application/x-www-form-urlencoded"
+    payload: "open=false"
+    username: "info-display"
+    password: !secret labor_api
+    verify_ssl: False
+
+shell_command:
+  jukebox_labor_spotify_next: ssh labor@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+  jukebox_adahlhoff_spotify_next: ssh adahlhoff@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+
+# Example configuration.yaml entry
+rest:
+  - authentication: basic
+    username: "info-display"
+    password: !secret labor_api
+    scan_interval: 100
+    resource: "https://freieslabor.org/api/room/"
+    verify_ssl: false
+    sensor:
+      - name: "Raumstatus"
+        json_attributes:
+          - "open"
+          - "since"
