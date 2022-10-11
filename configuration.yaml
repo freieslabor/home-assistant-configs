@@ -97,6 +97,9 @@ shell_command:
   frozen_bottle_jukebox_visualizer_stop: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox systemctl --user stop frozen-bottle-visualizer.service"
   jukebox_mute: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer set Master mute"
   jukebox_unmute: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer set Master unmute"
+  jukebox_vol_plus: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer sset Master '10%+'"
+  jukebox_vol_minus: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer sset Master '10%-'"
+  jukebox_suspend: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox \"sudo ethtool -s enp2s0 wol g && sudo systemctl suspend\""
 
 # Example configuration.yaml entry
 rest:
