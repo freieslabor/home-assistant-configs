@@ -10,29 +10,34 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
+#logger:
+#  default: debug
+
 # Example configuration.yaml entry
 switch:
   - platform: command_line
     switches:
-      frozenbottle_jukebox_labor_equalizer:
-        command_on: ssh labor@jukebox systemctl --user start frozen-bottle-equalizer.service
-        command_off: ssh labor@jukebox systemctl --user stop frozen-bottle-equalizer.service
-      frozenbottle_jukebox_adahlhoff_equalizer:
-        command_on: ssh adahlhoff@jukebox systemctl --user start frozen-bottle-equalizer.service
-        command_off: ssh adahlhoff@jukebox systemctl --user stop frozen-bottle-equalizer.service
       frozenbottle_patterns:
-        command_on: ssh frozen-bottle systemctl start frozen-bottle-loop-all.service
-        command_off: ssh frozen-bottle systemctl stop frozen-bottle-loop-all.service
-      jukebox_labor_mute:
-        command_on: ssh labor@jukebox amixer set Master mute
-        command_off: ssh labor@jukebox amixer set Master unmute
-      jukebox_adahlhoff_mute:
-        command_on: ssh adahlhoff@jukebox amixer set Master mute
-        command_off: ssh adahlhoff@jukebox amixer set Master unmute
+        command_on: "ssh frozen-bottle systemctl start frozen-bottle-loop-all.service"
+        command_off: "ssh frozen-bottle systemctl stop frozen-bottle-loop-all.service"
 
   - platform: wake_on_lan
     mac: "d0:27:88:b2:48:38"
     name: "Jukebox"
+
+  - platform: template
+    switches:
+      jukebox_mute:
+        turn_on:
+          service: shell_command.jukebox_mute
+        turn_off:
+          service: shell_command.jukebox_unmute
+
+      jukebox_visualizer:
+        turn_on:
+          service: shell_command.frozen_bottle_jukebox_visualizer_start
+        turn_off:
+          service: shell_command.frozen_bottle_jukebox_visualizer_stop
 
 rest_command:
   ampel_off:
@@ -87,8 +92,11 @@ rest_command:
     verify_ssl: False
 
 shell_command:
-  jukebox_labor_spotify_next: ssh labor@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
-  jukebox_adahlhoff_spotify_next: ssh adahlhoff@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+  jukebox_spotify_next: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
+  frozen_bottle_jukebox_visualizer_start: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox systemctl --user start frozen-bottle-visualizer.service"
+  frozen_bottle_jukebox_visualizer_stop: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox systemctl --user stop frozen-bottle-visualizer.service"
+  jukebox_mute: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer set Master mute"
+  jukebox_unmute: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer set Master unmute"
 
 # Example configuration.yaml entry
 rest:
