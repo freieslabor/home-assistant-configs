@@ -111,3 +111,9 @@ rest:
         json_attributes:
           - "open"
           - "since"
+
+telegram_bot:
+  - platform: broadcast
+    api_key: !secret telegram_token
+    allowed_chat_ids:
+      - -1001326646611 # Freies Labor Channel

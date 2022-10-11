@@ -119,3 +119,35 @@
       entity_id: switch.tasmota_40f520cf460d_switch_relay_2
       domain: switch
   mode: single
+- id: '1665517172017'
+  alias: Raumstatus Closed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.raumstatus
+    attribute: open
+    from: true
+    to: false
+  condition: []
+  action:
+  - service: telegram_bot.send_message
+    data:
+      message: Das Labor ist jetzt zu.
+  mode: single
+- id: '1665517334695'
+  alias: Raumstatus Opened
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.raumstatus
+    attribute: open
+    from: false
+    to: true
+  condition: []
+  action:
+  - service: telegram_bot.send_message
+    data:
+      message: Das Labor ist jetzt offen.
+  mode: single
