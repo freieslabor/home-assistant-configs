@@ -1,0 +1,5 @@
+[Unit]
+Description=Frozen Bottle Equalizer
+
+[Service]
+ExecStart=/home/labor/devel/FrozenBottle/UDP_clients/audio_visualizer.py frozen-bottle

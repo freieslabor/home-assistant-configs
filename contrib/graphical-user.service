@@ -1,0 +1,10 @@
+[Unit]
+Description=Publish Graphical User To home-assistant MQTT Server
+Requires=xdg-desktop-portal-gtk.service
+After=xdg-desktop-portal-gtk.service
+
+[Service]
+ExecStart=/usr/bin/mqtt-publish-graphical-user %u
+
+[Install]
+WantedBy=default.target
