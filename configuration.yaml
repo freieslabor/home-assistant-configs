@@ -40,39 +40,6 @@ switch:
           service: shell_command.frozen_bottle_jukebox_visualizer_stop
 
 rest_command:
-  ampel_off:
-    url: "http://ampel/stop"
-
-  ampel_normal:
-    url: "http://ampel/normal"
-
-  ampel_night:
-    url: "http://ampel/night"
-
-  ampel_red:
-    url: "http://ampel/custom"
-    method: post
-    content_type: "application/x-www-form-urlencoded"
-    payload: "red=1&yellow=0&green=0"
-
-  ampel_yellow:
-    url: "http://ampel/custom"
-    method: post
-    content_type: "application/x-www-form-urlencoded"
-    payload: "red=0&yellow=1&green=0"
-
-  ampel_green:
-    url: "http://ampel/custom"
-    method: post
-    content_type: "application/x-www-form-urlencoded"
-    payload: "red=0&yellow=0&green=1"
-
-  ampel_all_on:
-    url: "http://ampel/custom"
-    method: post
-    content_type: "application/x-www-form-urlencoded"
-    payload: "red=1&yellow=1&green=1"
-
   labor_open:
     url: "https://freieslabor.org/api/room/"
     method: post
@@ -100,6 +67,11 @@ shell_command:
   jukebox_vol_plus: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer sset Master '10%+'"
   jukebox_vol_minus: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer sset Master '10%-'"
   jukebox_suspend: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox \"sudo ethtool -s enp2s0 wol g && sudo systemctl suspend\""
+  jukebox_spotify: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox screen -dm \"bash -c 'DISPLAY=:0 spotify'\""
+  ampel_off: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data= http://ampel/stop\""
+  ampel_random: "ssh homeassistant@home-assistant systemctl --user start ampel-random.service"
+  ampel_normal: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data= http://ampel/normal\""
+  ampel_all_on: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
 
 # Example configuration.yaml entry
 rest:
