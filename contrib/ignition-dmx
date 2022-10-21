@@ -1,0 +1,39 @@
+#!/srv/homeassistant/bin/python3
+
+# call: ./send-artnet.py <IP>        <R> <G> <B> <STROBE> <MASTER> <MODE>
+# call: ./send-artnet.py 2.22.47.232 200 100 100 0        255      0
+# MODE:
+# 000-031: inactive
+# 032-063: auto dim (up)
+# 064-095: auto dim (down)
+# 096-127: auto dim (up/down)
+# 128-159: auto color transition
+# 160-191: random color switching (3 colors)
+# 192-223: random color switching (7 colors)
+# 224-255: music control
+
+import asyncio
+import sys
+
+import pyartnet
+
+async def main():
+    # Run this code in your async function
+    node = pyartnet.ArtNetNode(sys.argv[1])
+    await node.start()
+
+    # Create universe 0
+    universe = node.add_universe(0)
+
+    # address = 1, 6 channels
+    channel = universe.add_channel(start=1, width=6)
+
+    args = list(map(int, sys.argv[2:8]))
+    # "fade" with duration = 0
+    channel.add_fade(args, 0)
+
+    await channel.wait_till_fade_complete()
+
+loop = asyncio.new_event_loop()
+loop.run_until_complete(main())
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+if [ "$EUID" -ne 0 ]
+	then echo "Needs to be run as root."
+	exit 1
+fi
+
+USER=$(sudo ps -o 'user:200 comm' ax | grep -i -e 'x-session-manager$' -e 'xfce4-session$' | head -n1 | cut -d" " -f1)
+
+set -x
+mosquitto_pub -h home-assistant -u jukebox -P PASSWORD -r -t "homeassistant/sensor/jukebox/graphical_user/state" -m "{\"user\": \"$USER\"}"
+

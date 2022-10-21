@@ -1,0 +1,11 @@
+#!/bin/bash
+
+while true; do
+	RED=$(($RANDOM%2))
+	YELLOW=$(($RANDOM%2))
+	GREEN=$(($RANDOM%2))
+
+	if [ $(($RED+$YELLOW+$GREEN)) -gt 0 ]; then
+		wget -O /dev/null -q http://ampel/custom --post-data="red=${RED}&yellow=${YELLOW}&green=${GREEN}"
+	fi
+done
