@@ -72,6 +72,7 @@ shell_command:
   ampel_random: "ssh homeassistant@home-assistant systemctl --user start ampel-random.service"
   ampel_normal: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data= http://ampel/normal\""
   ampel_all_on: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
+  studio_scheinwerfer_set: "/home/homeassistant/bin/ignition-dmx-hass 2.22.47.232 {{ states('input_number.ignition_hue') | int }} {{ states('input_number.ignition_saturation') | int }} {{ states('input_number.ignition_brightness') | int}} {{ states('input_select.ignition_effect') }}"
 
 # Example configuration.yaml entry
 rest:
@@ -92,3 +93,62 @@ telegram_bot:
     api_key: !secret telegram_token
     allowed_chat_ids:
       - -1001326646611 # Freies Labor Channel
+
+# note: effect_list_template needs similar definition in settings -> devices & services -> helpers -> ignition_effect
+light:
+  - platform: template
+    lights:
+      ignition_spot:
+        friendly_name: "LED-Scheinwerfer"
+        unique_id: "ignition-spot-1"
+        value_template: "{{ states('input_number.ignition_brightness') | int > 0 }}"
+        level_template: "{{ states('input_number.ignition_brightness') | int }}"
+        color_template: "({{ states('input_number.ignition_hue') | int }}, {{ states('input_number.ignition_saturation') | int }})"
+        effect_list_template: "{{ ['normal', 'dim-up', 'dim-down', 'dim-up-down', 'color-transition', '3-random-colors', '7-random-colors', 'music-control', 'strobe'] }}"
+        effect_template: "{{ states('input_select.ignition_effect') }}"
+        turn_on:
+          - service: input_number.set_value
+            data:
+              value: 148
+              entity_id: input_number.ignition_brightness
+          - service: input_number.set_value
+            data:
+              value: 15
+              entity_id: input_number.ignition_hue
+          - service: input_number.set_value
+            data:
+              value: 57
+              entity_id: input_number.ignition_saturation
+          - service: input_select.select_option
+            data:
+              option: normal
+              entity_id: input_select.ignition_effect
+          - service: shell_command.studio_scheinwerfer_set
+        turn_off:
+          - service: input_number.set_value
+            data:
+              value: 0
+              entity_id: input_number.ignition_brightness
+          - service: shell_command.studio_scheinwerfer_set
+        set_level:
+          - service: input_number.set_value
+            data:
+              value: "{{ brightness }}"
+              entity_id: input_number.ignition_brightness
+          - service: shell_command.studio_scheinwerfer_set
+        set_color:
+          - service: input_number.set_value
+            data:
+              value: "{{ h }}"
+              entity_id: input_number.ignition_hue
+          - service: input_number.set_value
+            data:
+              value: "{{ s }}"
+              entity_id: input_number.ignition_saturation
+          - service: shell_command.studio_scheinwerfer_set
+        set_effect:
+          - service: input_select.select_option
+            data:
+              option: "{{ effect }}"
+              entity_id: input_select.ignition_effect
+          - service: shell_command.studio_scheinwerfer_set

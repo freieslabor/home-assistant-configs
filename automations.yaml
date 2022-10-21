@@ -17,6 +17,10 @@
     data: {}
   - service: shell_command.jukebox_suspend
     data: {}
+  - type: turn_off
+    device_id: 22efa1c59df915f4435c26c130bdc1b5
+    entity_id: switch.tasmota_6
+    domain: switch
   mode: single
 - id: '1663369771702'
   alias: Labor-Status-Knopf
@@ -155,6 +159,12 @@
   - type: turn_on
     device_id: 312a79759c19a2c2ddafcdd6966fa4ce
     entity_id: switch.tasmota_4
+    domain: switch
+  - service: shell_command.studio_scheinwerfer_on
+    data: {}
+  - type: turn_on
+    device_id: 22efa1c59df915f4435c26c130bdc1b5
+    entity_id: switch.tasmota_6
     domain: switch
   - delay:
       hours: 0
