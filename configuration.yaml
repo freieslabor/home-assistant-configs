@@ -68,10 +68,10 @@ shell_command:
   jukebox_vol_minus: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer sset Master '5%-'"
   jukebox_suspend: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox \"sudo ethtool -s enp2s0 wol g && sudo systemctl suspend\""
   jukebox_spotify: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox screen -dm \"bash -c 'DISPLAY=:0 spotify'\""
-  ampel_off: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data= http://ampel/stop\""
-  ampel_random: "ssh homeassistant@home-assistant systemctl --user start ampel-random.service"
-  ampel_normal: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data= http://ampel/normal\""
-  ampel_all_on: "ssh homeassistant@home-assistant \"systemctl --user stop ampel-random.service && wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
+  ampel_off: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data= http://ampel/stop\""
+  ampel_random: "ssh homeassistant@localhost systemctl --user start ampel-random.service"
+  ampel_normal: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data= http://ampel/normal\""
+  ampel_all_on: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
   studio_scheinwerfer_set: "/home/homeassistant/bin/ignition-dmx-hass 2.22.47.232 {{ states('input_number.ignition_hue') | int }} {{ states('input_number.ignition_saturation') | int }} {{ states('input_number.ignition_brightness') | int}} {{ states('input_select.ignition_effect') }}"
 
 # Example configuration.yaml entry
