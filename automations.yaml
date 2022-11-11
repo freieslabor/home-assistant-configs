@@ -21,6 +21,13 @@
     device_id: 22efa1c59df915f4435c26c130bdc1b5
     entity_id: switch.tasmota_6
     domain: switch
+  - service: input_number.set_value
+    data:
+      value: 0
+    target:
+      entity_id: input_number.ignition_brightness
+  - service: shell_command.studio_scheinwerfer_set
+    data: {}
   mode: single
 - id: '1663369771702'
   alias: Labor-Status-Knopf
@@ -142,8 +149,6 @@
   - service: wake_on_lan.send_magic_packet
     data:
       mac: d0:27:88:b2:48:38
-  - service: shell_command.ampel_normal
-    data: {}
   - type: turn_on
     device_id: 6c978d6bc0ca353c795cd7b5218d8231
     entity_id: switch.tasmota_3
@@ -160,12 +165,37 @@
     device_id: 312a79759c19a2c2ddafcdd6966fa4ce
     entity_id: switch.tasmota_4
     domain: switch
-  - service: shell_command.studio_scheinwerfer_on
-    data: {}
+  - type: turn_off
+    device_id: 3d898db6113cdd43897c743bb722e1dd
+    entity_id: switch.shelly1l_98cdac2f6c59
+    domain: switch
   - type: turn_on
     device_id: 22efa1c59df915f4435c26c130bdc1b5
     entity_id: switch.tasmota_6
     domain: switch
+  - type: turn_on
+    device_id: b04a55b5277537130b96d0950dae5f8e
+    entity_id: switch.tasmota_7
+    domain: switch
+  - service: shell_command.ampel_normal
+    data: {}
+  - service: input_number.set_value
+    data:
+      value: 148
+    target:
+      entity_id: input_number.ignition_brightness
+  - service: input_number.set_value
+    data:
+      value: 15
+    target:
+      entity_id: input_number.ignition_hue
+  - service: input_number.set_value
+    data:
+      value: 57
+    target:
+      entity_id: input_number.ignition_saturation
+  - service: shell_command.studio_scheinwerfer_set
+    data: {}
   - delay:
       hours: 0
       minutes: 0
