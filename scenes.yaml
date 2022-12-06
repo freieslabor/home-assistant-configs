@@ -14,6 +14,12 @@
       friendly_name: Leuchtstoffröhre
       state: 'off'
     switch.tasmota:
-      friendly_name: Studio-Scheinwerfer
+      friendly_name: Lampe Strick-Liesel
+      state: 'off'
+    switch.tasmota_7:
+      friendly_name: Oma-Lampe Waschbecken
+      state: 'off'
+    switch.tasmota_6:
+      friendly_name: Verstärker
       state: 'off'
   metadata: {}

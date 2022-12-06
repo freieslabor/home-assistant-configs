@@ -72,7 +72,7 @@ shell_command:
   ampel_random: "ssh homeassistant@localhost systemctl --user start ampel-random.service"
   ampel_normal: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data= http://ampel/normal\""
   ampel_all_on: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
-  studio_scheinwerfer_set: "/home/homeassistant/bin/ignition-dmx-hass 2.22.47.232 {{ states('input_number.ignition_hue') | int }} {{ states('input_number.ignition_saturation') | int }} {{ states('input_number.ignition_brightness') | int}} {{ states('input_select.ignition_effect') }}"
+  studio_scheinwerfer_set: "/home/homeassistant/bin/ignition-dmx-hass bluedmx.lan {{ states('input_number.ignition_hue') | int }} {{ states('input_number.ignition_saturation') | int }} {{ states('input_number.ignition_brightness') | int}} {{ states('input_select.ignition_effect') }}"
 
 # Example configuration.yaml entry
 rest:

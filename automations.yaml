@@ -3,7 +3,12 @@
   description: ''
   trigger:
   - platform: device
-    type: changed_states
+    type: turned_off
+    device_id: d1aaa3538c22db1672ebb37023c02f9b
+    entity_id: switch.tasmota_5
+    domain: switch
+  - platform: device
+    type: turned_on
     device_id: d1aaa3538c22db1672ebb37023c02f9b
     entity_id: switch.tasmota_5
     domain: switch
@@ -13,20 +18,16 @@
     target:
       entity_id: scene.new_scene
     metadata: {}
-  - service: shell_command.ampel_off
-    data: {}
-  - service: shell_command.jukebox_suspend
-    data: {}
-  - type: turn_off
-    device_id: 22efa1c59df915f4435c26c130bdc1b5
-    entity_id: switch.tasmota_6
-    domain: switch
   - service: input_number.set_value
     data:
       value: 0
     target:
       entity_id: input_number.ignition_brightness
   - service: shell_command.studio_scheinwerfer_set
+    data: {}
+  - service: shell_command.ampel_off
+    data: {}
+  - service: shell_command.jukebox_suspend
     data: {}
   mode: single
 - id: '1663369771702'
@@ -36,6 +37,13 @@
   - platform: state
     entity_id:
     - switch.tasmota_40f520cf460d_switch_relay_2
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id:
+    - switch.tasmota_40f520cf460d_switch_relay_2
+    from: 'on'
+    to: 'off'
   condition: []
   action:
   - if:
@@ -140,7 +148,12 @@
   description: ''
   trigger:
   - platform: device
-    type: changed_states
+    type: turned_off
+    device_id: d1aaa3538c22db1672ebb37023c02f9b
+    entity_id: switch.tasmota_40f520cf460d_switch_relay_1
+    domain: switch
+  - platform: device
+    type: turned_on
     device_id: d1aaa3538c22db1672ebb37023c02f9b
     entity_id: switch.tasmota_40f520cf460d_switch_relay_1
     domain: switch
