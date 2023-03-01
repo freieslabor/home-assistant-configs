@@ -2,16 +2,16 @@
   alias: Alles-Aus-Knopf
   description: ''
   trigger:
-  - platform: device
-    type: turned_off
-    device_id: d1aaa3538c22db1672ebb37023c02f9b
-    entity_id: switch.tasmota_5
-    domain: switch
-  - platform: device
-    type: turned_on
-    device_id: d1aaa3538c22db1672ebb37023c02f9b
-    entity_id: switch.tasmota_5
-    domain: switch
+  - platform: state
+    entity_id:
+    - switch.tasmota_5
+    from: 'on'
+    to: 'off'
+  - platform: state
+    entity_id:
+    - switch.tasmota_5
+    from: 'off'
+    to: 'on'
   condition: []
   action:
   - service: scene.turn_on
@@ -147,16 +147,16 @@
   alias: Lounge-Mode
   description: ''
   trigger:
-  - platform: device
-    type: turned_off
-    device_id: d1aaa3538c22db1672ebb37023c02f9b
-    entity_id: switch.tasmota_40f520cf460d_switch_relay_1
-    domain: switch
-  - platform: device
-    type: turned_on
-    device_id: d1aaa3538c22db1672ebb37023c02f9b
-    entity_id: switch.tasmota_40f520cf460d_switch_relay_1
-    domain: switch
+  - platform: state
+    entity_id:
+    - switch.tasmota_40f520cf460d_switch_relay_1
+    from: 'on'
+    to: 'off'
+  - platform: state
+    entity_id:
+    - switch.tasmota_40f520cf460d_switch_relay_1
+    from: 'off'
+    to: 'on'
   condition: []
   action:
   - service: wake_on_lan.send_magic_packet
@@ -189,6 +189,10 @@
   - type: turn_on
     device_id: b04a55b5277537130b96d0950dae5f8e
     entity_id: switch.tasmota_7
+    domain: switch
+  - type: turn_on
+    device_id: caab001049d6874102c1c0e4e0eda488
+    entity_id: switch.tasmota_8
     domain: switch
   - service: shell_command.ampel_normal
     data: {}
@@ -225,4 +229,23 @@
       milliseconds: 0
   - service: shell_command.jukebox_spotify_next
     data: {}
+  mode: single
+- id: '1670970568171'
+  alias: Labor Auto Close
+  description: ''
+  trigger:
+  - platform: time
+    at: 06:00:00
+  condition:
+  - condition: state
+    entity_id: sensor.raumstatus
+    attribute: open
+    state: true
+  action:
+  - service: rest_command.labor_close
+    data: {}
+  - service: homeassistant.update_entity
+    data: {}
+    target:
+      entity_id: sensor.raumstatus
   mode: single

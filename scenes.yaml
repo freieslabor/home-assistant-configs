@@ -19,7 +19,8 @@
     switch.tasmota_7:
       friendly_name: Oma-Lampe Waschbecken
       state: 'off'
-    switch.tasmota_6:
+    switch.tasmota_8:
+      icon: mdi:music
       friendly_name: Verstärker
       state: 'off'
   metadata: {}
