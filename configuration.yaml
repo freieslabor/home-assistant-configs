@@ -61,6 +61,7 @@ rest_command:
 shell_command:
   jukebox_spotify_next: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next"
   jukebox_spotify_playpause: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
+  jukebox_browser_playpause: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox playerctl-browser play-pause"
   frozen_bottle_jukebox_visualizer_start: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox systemctl --user start frozen-bottle-visualizer.service"
   frozen_bottle_jukebox_visualizer_stop: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox systemctl --user stop frozen-bottle-visualizer.service"
   jukebox_mute: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox amixer set Master mute"
@@ -74,6 +75,12 @@ shell_command:
   ampel_normal: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data= http://ampel/normal\""
   ampel_all_on: "ssh homeassistant@localhost \"systemctl --user stop ampel-random.service; wget -q -O /dev/null --post-data='red=1&yellow=1&green=1' http://ampel/custom\""
   studio_scheinwerfer_set: "/home/homeassistant/bin/ignition-dmx-hass bluedmx.lan {{ states('input_number.ignition_hue') | int }} {{ states('input_number.ignition_saturation') | int }} {{ states('input_number.ignition_brightness') | int}} {{ states('input_select.ignition_effect') }}"
+
+sensor:
+  - platform: command_line
+    command: "ssh {{ (states('sensor.jukebox_active_user') | from_json()).user }}@jukebox playerctl-get-playing"
+    name: jukebox_now_playing
+    scan_interval: 30
 
 # Example configuration.yaml entry
 rest:
